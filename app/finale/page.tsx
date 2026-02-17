@@ -1,38 +1,32 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { jsPDF } from "jspdf";
+import { useState } from "react";
 
 export default function FinalePage() {
-  const generateCertificate = () => {
-    const doc = new jsPDF("p", "mm", "a4");
+  const [generating, setGenerating] = useState(false);
 
+  const generateCertificate = () => {
+    setGenerating(true);
+
+    const doc = new jsPDF("p", "mm", "a4");
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const centerX = pageWidth / 2;
 
-    // ===== Background =====
+    // Background
     doc.setFillColor(248, 240, 220);
     doc.rect(0, 0, pageWidth, pageHeight, "F");
 
-    // ===== Outer Border =====
+    // Double Border
     doc.setDrawColor(120, 90, 40);
     doc.setLineWidth(3);
     doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
-
-    // ===== Inner Border =====
     doc.setLineWidth(0.8);
     doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
 
-    // ===== Watermark =====
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(60);
-    doc.setTextColor(230, 220, 200);
-    doc.text("LOVE", centerX, pageHeight / 2, {
-      align: "center",
-      angle: 45,
-    });
-
-    // ===== Title =====
+    // Title
     doc.setFont("times", "bold");
     doc.setFontSize(26);
     doc.setTextColor(102, 51, 0);
@@ -40,17 +34,13 @@ export default function FinalePage() {
       align: "center",
     });
 
-    // Divider
-    doc.setLineWidth(0.5);
     doc.line(40, 60, pageWidth - 40, 60);
 
-    // ===== Subtitle =====
     doc.setFont("times", "italic");
     doc.setFontSize(16);
     doc.setTextColor(60);
     doc.text("This certifies that", centerX, 80, { align: "center" });
 
-    // ===== Name (Main Focus) =====
     doc.setFont("times", "bold");
     doc.setFontSize(30);
     doc.setTextColor(120, 30, 60);
@@ -58,7 +48,6 @@ export default function FinalePage() {
       align: "center",
     });
 
-    // ===== Body Text =====
     doc.setFont("times", "normal");
     doc.setFontSize(14);
     doc.setTextColor(50);
@@ -71,9 +60,7 @@ export default function FinalePage() {
       "• Lifetime teasing privileges",
       "• Priority cuddle access",
       "",
-      "This certificate is non-transferable.",
-      "No refunds.",
-      "Forever binding."
+      "No expiration. No transfers. No refunds."
     ];
 
     doc.text(body, centerX, 125, {
@@ -82,16 +69,6 @@ export default function FinalePage() {
       maxWidth: 140,
     });
 
-    // ===== Signature Line =====
-    doc.setLineWidth(0.5);
-    doc.line(centerX - 40, pageHeight - 55, centerX + 40, pageHeight - 55);
-
-    doc.setFontSize(12);
-    doc.text("Authorized by: Valentine Authority", centerX, pageHeight - 48, {
-      align: "center",
-    });
-
-    // ===== Date =====
     doc.setFontSize(10);
     doc.setTextColor(90);
     doc.text(
@@ -101,23 +78,52 @@ export default function FinalePage() {
       { align: "center" }
     );
 
-    doc.save("Luxury_Love_Certificate.pdf");
+    setTimeout(() => {
+      doc.save("Luxury_Love_Certificate.pdf");
+      setGenerating(false);
+    }, 800);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-200 to-rose-300">
-      <div className="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-md">
-        <h1 className="text-3xl font-bold mb-4">Congratulations 💖</h1>
-        <p className="text-gray-600 mb-8">
-          Your love has officially been verified and certified.
+    <main className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black text-white">
+
+      {/* Deep Cinematic Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1f1c2c] via-[#2c1e3e] to-[#3a0f2e]" />
+
+      {/* Subtle Gold Glow */}
+      <div className="absolute top-[-250px] left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-yellow-500 blur-[200px] opacity-10" />
+
+      {/* Floating Soft Light */}
+      <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] bg-pink-600 blur-[180px] opacity-10" />
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1 }}
+        className="relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-12 md:p-16 text-center max-w-2xl shadow-2xl"
+      >
+        <p className="uppercase tracking-[6px] text-xs text-pink-300 mb-6">
+          Final Release
         </p>
-        <button
+
+        <h1 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
+          Officially Claimed 💍
+        </h1>
+
+        <p className="text-lg text-gray-200 leading-relaxed mb-10">
+          Your affection has been reviewed, approved,
+          and permanently registered.
+        </p>
+
+        <motion.button
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.95 }}
           onClick={generateCertificate}
-          className="px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-full text-lg font-semibold shadow-lg hover:scale-105 transition-transform"
+          className="px-10 py-4 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full text-lg font-semibold shadow-xl"
         >
-          Download Luxury Certificate
-        </button>
-      </div>
-    </div>
+          {generating ? "Preparing Certificate..." : "Download Official Certificate"}
+        </motion.button>
+      </motion.div>
+    </main>
   );
 }

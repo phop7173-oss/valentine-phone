@@ -132,34 +132,46 @@ useEffect(() => {
   };
 
   return (
-    <div
-      onPointerDown={(e) => handlePointer(e.clientX, e.clientY)}
-      className="relative w-screen h-screen overflow-hidden bg-gradient-to-br from-pink-300 to-rose-200 cursor-pointer select-none"
-    >
-      <AnimatePresence>
-        {notes.map((note) => (
-          <motion.div
-            key={note.id}
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ type: "spring", stiffness: 200, damping: 18 }}
-            style={{
-              position: "absolute",
-              left: note.x,
-              top: note.y,
-              transform: "translate(-50%, -50%)",
-            }}
-            className="pointer-events-none bg-white/95 px-4 py-2 rounded-2xl shadow-xl text-sm text-pink-700 max-w-xs"
-          >
-            {note.text}
-          </motion.div>
-        ))}
-      </AnimatePresence>
+   <main className="relative min-h-screen overflow-hidden">
 
-      <div className="absolute top-4 right-4 bg-white/80 text-pink-700 px-3 py-1 rounded-full text-sm shadow">
-        {usedMessages.length}/{messages.length}
-      </div>
+  {/* Background Gradient */}
+  <div className="absolute inset-0 bg-gradient-to-br from-rose-200 via-pink-200 to-red-300" />
+
+  {/* Floating Glow */}
+  <div className="absolute top-[-150px] left-[-150px] w-[400px] h-[400px] bg-pink-400 rounded-full blur-3xl opacity-30 animate-pulse" />
+  <div className="absolute bottom-[-150px] right-[-150px] w-[400px] h-[400px] bg-rose-500 rounded-full blur-3xl opacity-30 animate-pulse" />
+
+  {/* YOUR ORIGINAL INTERACTION LAYER */}
+  <div
+    onPointerDown={(e) => handlePointer(e.clientX, e.clientY)}
+    className="relative z-10 w-screen h-screen cursor-pointer select-none"
+  >
+    <AnimatePresence>
+      {notes.map((note) => (
+        <motion.div
+          key={note.id}
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ type: "spring", stiffness: 200, damping: 18 }}
+          style={{
+            position: "absolute",
+            left: note.x,
+            top: note.y,
+            transform: "translate(-50%, -50%)",
+          }}
+          className="pointer-events-none bg-white/95 px-4 py-2 rounded-2xl shadow-xl text-sm text-pink-700 max-w-xs"
+        >
+          {note.text}
+        </motion.div>
+      ))}
+    </AnimatePresence>
+
+    <div className="absolute top-4 right-4 bg-white/80 text-pink-700 px-3 py-1 rounded-full text-sm shadow">
+      {usedMessages.length}/{messages.length}
     </div>
+  </div>
+
+</main>
   );
 }
