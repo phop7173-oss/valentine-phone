@@ -1,110 +1,123 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import jsPDF from 'jspdf'
+import { jsPDF } from "jspdf";
 
 export default function FinalePage() {
-  const [generating, setGenerating] = useState(false)
-
   const generateCertificate = () => {
-    const doc = new jsPDF()
+    const doc = new jsPDF("p", "mm", "a4");
 
-    // ===== Border =====
-    doc.setDrawColor(233, 30, 99)
-    doc.setLineWidth(2)
-    doc.rect(10, 10, 190, 277)
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const centerX = pageWidth / 2;
+
+    // ===== Background =====
+    doc.setFillColor(248, 240, 220);
+    doc.rect(0, 0, pageWidth, pageHeight, "F");
+
+    // ===== Outer Border =====
+    doc.setDrawColor(120, 90, 40);
+    doc.setLineWidth(3);
+    doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
+
+    // ===== Inner Border =====
+    doc.setLineWidth(0.8);
+    doc.rect(15, 15, pageWidth - 30, pageHeight - 30);
+
+    // ===== Watermark =====
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(60);
+    doc.setTextColor(230, 220, 200);
+    doc.text("LOVE", centerX, pageHeight / 2, {
+      align: "center",
+      angle: 45,
+    });
 
     // ===== Title =====
-    doc.setFontSize(22)
-    doc.setTextColor(233, 30, 99)
-    doc.text('OFFICIAL OWNERSHIP CERTIFICATE', 105, 35, {
-      align: 'center',
-    })
+    doc.setFont("times", "bold");
+    doc.setFontSize(26);
+    doc.setTextColor(102, 51, 0);
+    doc.text("OFFICIAL OWNERSHIP CERTIFICATE", centerX, 50, {
+      align: "center",
+    });
+
+    // Divider
+    doc.setLineWidth(0.5);
+    doc.line(40, 60, pageWidth - 40, 60);
 
     // ===== Subtitle =====
-    doc.setFontSize(16)
-    doc.setTextColor(0, 0, 0)
-    doc.text('This certifies that:', 105, 60, {
-      align: 'center',
-    })
+    doc.setFont("times", "italic");
+    doc.setFontSize(16);
+    doc.setTextColor(60);
+    doc.text("This certifies that", centerX, 80, { align: "center" });
 
-    // ===== Name =====
-    doc.setFontSize(22)
-    doc.setTextColor(173, 20, 87)
-    doc.text('Thawe Su Kyar Myint', 105, 75, {
-      align: 'center',
-    })
+    // ===== Name (Main Focus) =====
+    doc.setFont("times", "bold");
+    doc.setFontSize(30);
+    doc.setTextColor(120, 30, 60);
+    doc.text("Thawe Su Kyar Myint", centerX, 100, {
+      align: "center",
+    });
 
-    // ===== Body =====
-    doc.setFontSize(14)
-    doc.setTextColor(0, 0, 0)
+    // ===== Body Text =====
+    doc.setFont("times", "normal");
+    doc.setFontSize(14);
+    doc.setTextColor(50);
 
-    const bodyText = [
-      'Has officially unlocked Permanent Affection Mode 💕',
-      '',
-      'Including:',
-      '• Unlimited kisses',
-      '• Lifetime teasing privileges',
-      '• Priority cuddle access',
-      '',
-      'This certificate is non-transferable.',
-      'No refunds.',
-      'Forever binding.',
-    ]
+    const body = [
+      "Has officially unlocked Permanent Affection Mode",
+      "",
+      "Including:",
+      "• Unlimited kisses",
+      "• Lifetime teasing privileges",
+      "• Priority cuddle access",
+      "",
+      "This certificate is non-transferable.",
+      "No refunds.",
+      "Forever binding."
+    ];
 
-    doc.text(bodyText, 105, 105, {
-      align: 'center',
-    })
+    doc.text(body, centerX, 125, {
+      align: "center",
+      lineHeightFactor: 1.8,
+      maxWidth: 140,
+    });
+
+    // ===== Signature Line =====
+    doc.setLineWidth(0.5);
+    doc.line(centerX - 40, pageHeight - 55, centerX + 40, pageHeight - 55);
+
+    doc.setFontSize(12);
+    doc.text("Authorized by: Valentine Authority", centerX, pageHeight - 48, {
+      align: "center",
+    });
 
     // ===== Date =====
-    doc.setFontSize(10)
-    doc.setTextColor(120)
+    doc.setFontSize(10);
+    doc.setTextColor(90);
     doc.text(
-      `Issued on: ${new Date().toDateString()}`,
-      105,
-      260,
-      { align: 'center' }
-    )
+      `Issued on ${new Date().toDateString()}`,
+      centerX,
+      pageHeight - 30,
+      { align: "center" }
+    );
 
-    doc.save('Thawe_Su_Kyar_Myint_Certificate.pdf')
-  }
-
-  const handleDownload = () => {
-    setGenerating(true)
-
-    setTimeout(() => {
-      generateCertificate()
-      setGenerating(false)
-    }, 800)
-  }
+    doc.save("Luxury_Love_Certificate.pdf");
+  };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-200 via-pink-200 to-red-300 p-6">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-        className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-10 max-w-md text-center"
-      >
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Congratulations 💖
-        </h1>
-
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-200 to-rose-300">
+      <div className="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-md">
+        <h1 className="text-3xl font-bold mb-4">Congratulations 💖</h1>
         <p className="text-gray-600 mb-8">
           Your love has officially been verified and certified.
         </p>
-
-        <motion.button
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleDownload}
-          disabled={generating}
-          className="px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold text-lg shadow-xl disabled:opacity-60"
+        <button
+          onClick={generateCertificate}
+          className="px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-full text-lg font-semibold shadow-lg hover:scale-105 transition-transform"
         >
-          {generating ? 'Generating...' : 'Download Certificate 💌'}
-        </motion.button>
-      </motion.div>
-    </main>
-  )
+          Download Luxury Certificate
+        </button>
+      </div>
+    </div>
+  );
 }
