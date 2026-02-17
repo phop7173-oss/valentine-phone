@@ -15,6 +15,16 @@ export default function SurprisePage() {
   const noteDuration = 2500;
   const maxNotes = 200;
 
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+const [musicStarted, setMusicStarted] = useState(false);
+
+useEffect(() => {
+  const audio = new Audio("/music/from-the-start.mp3");
+  audio.loop = true;
+  audio.volume = 0.6;
+  audioRef.current = audio;
+}, []);
+
   const messages = [
     "You're my favorite notification 💌",
     "My heart chose you 💓",
@@ -69,6 +79,10 @@ useEffect(() => {
   };
 
   const handlePointer = (clientX: number, clientY: number) => {
+	  if (!musicStarted && audioRef.current) {
+  audioRef.current.play().catch(() => {});
+  setMusicStarted(true);
+}
     if (clickLockRef.current) return;
     clickLockRef.current = true;
     setTimeout(() => (clickLockRef.current = false), 150);
