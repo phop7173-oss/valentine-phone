@@ -1,115 +1,101 @@
-"use client";
+'use client'
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useRef, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import jsPDF from 'jspdf'
 
-type Heart = {
-  id: number;
-  size: number;
-  left: number;
-  duration: number;
-  delay: number;
-};
+export default function FinalePage() {
+  const [generating, setGenerating] = useState(false)
 
-export default function HomePage() {
-  const router = useRouter();
-  const [explode, setExplode] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const generateCertificate = () => {
+    const doc = new jsPDF()
 
-  // ✅ Generate randomness only on client
-  const hearts = useMemo(() => {
-  return Array.from({ length: 18 }, (_, i) => ({
-    id: i,
-    size: Math.random() * 20 + 18,
-    left: Math.random() * 100,
-    duration: Math.random() * 5 + 6,
-    delay: Math.random() * 5,
-  }));
-}, []);
+    // ===== Border =====
+    doc.setDrawColor(233, 30, 99)
+    doc.setLineWidth(2)
+    doc.rect(10, 10, 190, 277)
 
-  const handleClick = () => {
-    setExplode(true);
+    // ===== Title =====
+    doc.setFontSize(22)
+    doc.setTextColor(233, 30, 99)
+    doc.text('OFFICIAL OWNERSHIP CERTIFICATE', 105, 35, { align: 'center' })
 
-    if (audioRef.current) {
-      audioRef.current.play().catch(() => {});
-    }
+    // ===== Subtitle =====
+    doc.setFontSize(16)
+    doc.setTextColor(0, 0, 0)
+    doc.text('This certifies that:', 105, 60, { align: 'center' })
+
+    // ===== Name =====
+    doc.setFontSize(22)
+    doc.setTextColor(173, 20, 87)
+    doc.text('Thawe Su Kyar Myint', 105, 75, { align: 'center' })
+
+    // ===== Body =====
+    doc.setFontSize(14)
+    doc.setTextColor(0, 0, 0)
+
+    const bodyText = [
+      'Has officially unlocked Permanent Affection Mode 💕',
+      '',
+      'Including:',
+      '• Unlimited kisses',
+      '• Lifetime teasing privileges',
+      '• Priority cuddle access',
+      '',
+      'This certificate is non-transferable.',
+      'No refunds.',
+      'Forever binding.',
+    ]
+
+    doc.text(bodyText, 105, 105, { align: 'center' })
+
+    // ===== Date =====
+    doc.setFontSize(10)
+    doc.setTextColor(120)
+    doc.text(
+      `Issued on: ${new Date().toDateString()}`,
+      105,
+      260,
+      { align: 'center' }
+    )
+
+    doc.save('Thawe_Su_Kyar_Myint_Certificate.pdf')
+  }
+
+  const handleDownload = () => {
+    setGenerating(true)
 
     setTimeout(() => {
-      router.push("/surprise");
-    }, 800);
-  };
+      generateCertificate()
+      setGenerating(false)
+    }, 800)
+  }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-pink-100 via-rose-200 to-red-200 flex items-center justify-center">
-
-      {/* Background Music */}
-      <audio ref={audioRef} loop>
-        <source src="/music/rewrite-the-stars.mp3" type="audio/mpeg" />
-      </audio>
-
-      {/* Floating Hearts */}
-      {hearts.map((heart) => (
-        <motion.div
-          key={heart.id}
-          initial={{ y: -100, x: `${heart.left}vw`, opacity: 0 }}
-          animate={{
-            y: "110vh",
-            opacity: [0, 1, 1, 0],
-            rotate: 360,
-          }}
-          transition={{
-            duration: heart.duration,
-            repeat: Infinity,
-            delay: heart.delay,
-            ease: "linear",
-          }}
-          className="absolute text-pink-400 pointer-events-none"
-          style={{ fontSize: heart.size }}
-        >
-          💖
-        </motion.div>
-      ))}
-
-      {/* Main Card */}
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-200 via-pink-200 to-red-300 p-6">
       <motion.div
-        initial={{ opacity: 0, scale: 0.92 }}
+        initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
-        className="relative z-10 bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl p-10 max-w-md text-center border border-white/40"
+        className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-10 max-w-md text-center"
       >
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Thawe 💕
+          Congratulations 💖
         </h1>
 
-        <p className="text-gray-600 mb-8 leading-relaxed">
-          I built this little universe just for you.
-          Every heartbeat, every click… leads to love.
+        <p className="text-gray-600 mb-8">
+          Your love has officially been verified and certified.
         </p>
 
         <motion.button
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
-          onClick={handleClick}
-          className="px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold text-lg shadow-lg"
+          onClick={handleDownload}
+          className="px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold text-lg shadow-xl"
         >
-          Will you be my Soulmate? 💌
+          {generating ? 'Generating...' : 'Download Certificate 💌'}
         </motion.button>
       </motion.div>
-
-      {/* Explosion */}
-      <AnimatePresence>
-        {explode && (
-          <motion.div
-            className="fixed inset-0 flex items-center justify-center text-6xl pointer-events-none"
-            initial={{ scale: 0 }}
-            animate={{ scale: 3, opacity: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            ❤️ 💖 💘 💞 💕
-          </motion.div>
-        )}
-      </AnimatePresence>
     </main>
-  );
+  )
 }
