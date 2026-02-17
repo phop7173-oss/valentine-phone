@@ -10,7 +10,7 @@ type UsedZones = Record<string, number>;
 export default function SurprisePage() {
   const router = useRouter();
 
-  // ✅ defaults moved inside (App Router safe)
+  // Defaults (App Router safe)
   const zoneSize = 80;
   const noteDuration = 2500;
   const maxNotes = 200;
