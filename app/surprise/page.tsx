@@ -1,24 +1,19 @@
 'use client';
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 type Note = { id: number; x: number; y: number; text: string };
 type UsedZones = Record<string, number>;
 
-type SurprisePageProps = {
-  zoneSize?: number;
-  noteDuration?: number;
-  maxNotes?: number;
-};
-
-export default function SurprisePage({
-  zoneSize = 80,
-  noteDuration = 2500,
-  maxNotes = 200,
-}: SurprisePageProps) {
+export default function SurprisePage() {
   const router = useRouter();
+
+  // ✅ defaults moved inside (App Router safe)
+  const zoneSize = 80;
+  const noteDuration = 2500;
+  const maxNotes = 200;
 
   const messages = [
     "You're my favorite notification 💌",
@@ -61,7 +56,6 @@ export default function SurprisePage({
   const clampPosition = (x: number, y: number) => {
     const w = window.innerWidth;
     const h = window.innerHeight;
-
     const padding = 120;
 
     return {
