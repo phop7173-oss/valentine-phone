@@ -50,7 +50,11 @@ export default function SurprisePage() {
   const [usedMessages, setUsedMessages] = useState<string[]>([]);
   const [redirectTriggered, setRedirectTriggered] = useState(false);
 
-  const nextNoteIdRef = useRef<number>(Date.now());
+  const nextNoteIdRef = useRef<number>(0);
+
+useEffect(() => {
+  nextNoteIdRef.current = Date.now();
+}, []);
   const clickLockRef = useRef(false);
 
   const clampPosition = (x: number, y: number) => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 type Heart = {
@@ -15,21 +15,18 @@ type Heart = {
 export default function HomePage() {
   const router = useRouter();
   const [explode, setExplode] = useState(false);
-  const [hearts, setHearts] = useState<Heart[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // ✅ Generate randomness only on client
-  useEffect(() => {
-    const generated = Array.from({ length: 18 }, (_, i) => ({
-      id: i,
-      size: Math.random() * 20 + 18,
-      left: Math.random() * 100,
-      duration: Math.random() * 5 + 6,
-      delay: Math.random() * 5,
-    }));
-
-    setHearts(generated);
-  }, []);
+  const hearts = useMemo(() => {
+  return Array.from({ length: 18 }, (_, i) => ({
+    id: i,
+    size: Math.random() * 20 + 18,
+    left: Math.random() * 100,
+    duration: Math.random() * 5 + 6,
+    delay: Math.random() * 5,
+  }));
+}, []);
 
   const handleClick = () => {
     setExplode(true);
