@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,15 +7,17 @@ import { useRouter } from "next/navigation";
 type Note = { id: number; x: number; y: number; text: string };
 type UsedZones = Record<string, number>;
 
+type SurprisePageProps = {
+  zoneSize?: number;
+  noteDuration?: number;
+  maxNotes?: number;
+};
+
 export default function SurprisePage({
   zoneSize = 80,
   noteDuration = 2500,
   maxNotes = 200,
-}: {
-  zoneSize?: number;
-  noteDuration?: number;
-  maxNotes?: number;
-}) {
+}: SurprisePageProps) {
   const router = useRouter();
 
   const messages = [
@@ -69,7 +71,6 @@ export default function SurprisePage({
   };
 
   const handlePointer = (clientX: number, clientY: number) => {
-    // 🚫 prevent double firing
     if (clickLockRef.current) return;
     clickLockRef.current = true;
     setTimeout(() => (clickLockRef.current = false), 150);
@@ -122,7 +123,6 @@ export default function SurprisePage({
       setNotes((prev) => prev.filter((n) => n.id !== newNote.id));
     }, noteDuration);
 
-    // 🎯 redirect when all unique messages discovered
     if (
       usedMessages.length + (repeatCount === 0 ? 1 : 0) ===
         messages.length &&
@@ -138,7 +138,6 @@ export default function SurprisePage({
       onPointerDown={(e) => handlePointer(e.clientX, e.clientY)}
       className="relative w-screen h-screen overflow-hidden bg-gradient-to-br from-pink-300 to-rose-200 cursor-pointer select-none"
     >
-      {/* Notes */}
       <AnimatePresence>
         {notes.map((note) => (
           <motion.div
@@ -160,7 +159,6 @@ export default function SurprisePage({
         ))}
       </AnimatePresence>
 
-      {/* HUD */}
       <div className="absolute top-4 right-4 bg-white/80 text-pink-700 px-3 py-1 rounded-full text-sm shadow">
         {usedMessages.length}/{messages.length}
       </div>
