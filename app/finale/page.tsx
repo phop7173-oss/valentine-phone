@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+// @ts-ignore
 import confetti from "canvas-confetti";
 
 export default function FinalePage() {
